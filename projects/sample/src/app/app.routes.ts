@@ -23,11 +23,6 @@ export let APP_ROUTES: Routes = [
     loadChildren: () => import('./flight-booking/flight-booking.module').then(mod => mod.FlightBookingModule)
   },
   {
-    path: 'history',
-    component: FlightHistoryComponent,
-    outlet: 'aux'
-  },
-  {
     path: '**',
     redirectTo: 'home'
   }

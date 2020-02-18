@@ -1,7 +1,11 @@
-import { authConfig } from '../auth.config';
-import { Component, OnInit } from '@angular/core';
-import { OAuthService } from 'angular-oauth2-oidc';
-import { authCodeFlowConfig } from '../auth-code-flow.config';
+import { authConfig } from '../configs/auth.config';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
+import { authCodeFlowConfig } from '../configs/auth-code-flow.config';
+import { fullConfig } from "../configs/full.config";
+import { JsonEditorComponent } from "ang-jsoneditor";
+import { authSapConfig } from "../configs/auth-sap.config";
+import { authCodeFlowSapConfig } from "../configs/auth-code-flow-sap.config";
 
 @Component({
   templateUrl: './home.component.html'
@@ -9,11 +13,18 @@ import { authCodeFlowConfig } from '../auth-code-flow.config';
 export class HomeComponent implements OnInit {
   loginFailed: boolean = false;
   userProfile: object;
+  selectedConfig: any = { ...authConfig };
+  currentConfig: any = { ...authConfig };
+
+  storedConfigs: StoredConfig[] = [];
+
+  @ViewChild('configEditor', { static: true }) configEditor: JsonEditorComponent;
 
   constructor(private oauthService: OAuthService) {
   }
 
   ngOnInit() {
+    this.storedConfigs = JSON.parse(localStorage.getItem(STORED_CONFIG_STORAGE_KEY_NAME)) || [];
     /*
         this.oauthService.loadDiscoveryDocumentAndTryLogin().then(_ => {
             if (!this.oauthService.hasValidIdToken() || !this.oauthService.hasValidAccessToken()) {
@@ -26,22 +37,20 @@ export class HomeComponent implements OnInit {
   async loginImplicit() {
 
     // Tweak config for implicit flow
-    this.oauthService.configure(authConfig);
+    this.oauthService.configure(this.currentConfig);
     await this.oauthService.loadDiscoveryDocument();
-    sessionStorage.setItem('flow', 'implicit');
 
-    this.oauthService.initLoginFlow('/some-state;p1=1;p2=2');
-      // the parameter here is optional. It's passed around and can be used after logging in
+    this.oauthService.initLoginFlow('/passed-state;p1=1;p2=2')
+    // the parameter here is optional. It's passed around and can be used after logging in
   }
 
   async loginCode() {
-      // Tweak config for code flow
-      this.oauthService.configure(authCodeFlowConfig);
-      await this.oauthService.loadDiscoveryDocument();
-      sessionStorage.setItem('flow', 'code');
-  
-      this.oauthService.initLoginFlow('/some-state;p1=1;p2=2');
-       // the parameter here is optional. It's passed around and can be used after logging in
+    // Tweak config for code flow
+    this.oauthService.configure(this.currentConfig);
+    await this.oauthService.loadDiscoveryDocument();
+
+    this.oauthService.initCodeFlow('/passed-state;p1=1;p2=2');
+    // the parameter here is optional. It's passed around and can be used after logging in
   }
 
   logout() {
@@ -65,7 +74,6 @@ export class HomeComponent implements OnInit {
   }
 
   refresh() {
-
     this.oauthService.oidc = true;
 
     if (this.oauthService.responseType === 'code') {
@@ -105,4 +113,60 @@ export class HomeComponent implements OnInit {
   get access_token_expiration() {
     return this.oauthService.getAccessTokenExpiration();
   }
+
+  implicitWithSapServer() {
+    this.selectedConfig = { ...authSapConfig };
+    this.currentConfig = { ...authSapConfig };
+    sessionStorage.setItem('flow', 'implicit');
+  }
+
+  implicitWithTestServer() {
+    this.selectedConfig = { ...authConfig };
+    this.currentConfig = { ...authConfig };
+    sessionStorage.setItem('flow', 'implicit');
+  }
+
+  codeWithTestServer() {
+    this.selectedConfig = { ...authCodeFlowConfig };
+    this.currentConfig = { ...authCodeFlowConfig };
+    sessionStorage.setItem('flow', 'code');
+  }
+
+  codeWithSapServer() {
+    this.selectedConfig = { ...authCodeFlowSapConfig };
+    this.currentConfig = { ...authCodeFlowSapConfig };
+    sessionStorage.setItem('flow', 'code');
+  }
+
+  loadFullConfig() {
+    this.selectedConfig = { ...fullConfig, ...this.currentConfig };
+  }
+
+  updateConfig() {
+    this.currentConfig = this.configEditor.get();
+  }
+
+  saveCurrentConfig() {
+    let storedConfigs = JSON.parse(localStorage.getItem(STORED_CONFIG_STORAGE_KEY_NAME)) || [] as StoredConfig[];
+    const newConfig: StoredConfig = {
+      name: prompt() || 'unnamed config',
+      config: this.currentConfig
+    };
+
+    storedConfigs.push(newConfig);
+    localStorage.setItem(STORED_CONFIG_STORAGE_KEY_NAME, JSON.stringify(storedConfigs));
+    this.storedConfigs = storedConfigs;
+  }
+
+  loadStoredConfig(config: AuthConfig) {
+    this.selectedConfig = config;
+    this.currentConfig = config;
+  }
 }
+
+interface StoredConfig {
+  name: string;
+  config: AuthConfig;
+}
+
+const STORED_CONFIG_STORAGE_KEY_NAME = 'oauth-configs';

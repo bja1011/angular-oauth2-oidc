@@ -1,6 +1,6 @@
-import { noDiscoveryAuthConfig } from './auth-no-discovery.config';
-import { googleAuthConfig } from './auth.google.config';
-import { authConfig } from './auth.config';
+import { noDiscoveryAuthConfig } from './configs/auth-no-discovery.config';
+import { googleAuthConfig } from './configs/auth.google.config';
+import { authConfig } from './configs/auth.config';
 import { FlightHistoryComponent } from './flight-history/flight-history.component';
 import { Component } from '@angular/core';
 import { OAuthService, AuthConfig, NullValidationHandler, JwksValidationHandler } from 'angular-oauth2-oidc';
@@ -8,7 +8,7 @@ import { OAuthService, AuthConfig, NullValidationHandler, JwksValidationHandler 
 import { Router } from '@angular/router';
 import { filter, delay } from 'rxjs/operators';
 import { of, race } from 'rxjs';
-import { authCodeFlowConfig } from './auth-code-flow.config';
+import { authCodeFlowConfig } from './configs/auth-code-flow.config';
 
 @Component({
   // tslint:disable-next-line:component-selector
@@ -17,7 +17,7 @@ import { authCodeFlowConfig } from './auth-code-flow.config';
 })
 export class AppComponent {
   constructor(private router: Router, private oauthService: OAuthService) {
-    
+
     // Remember the selected configuration
     if (sessionStorage.getItem('flow') === 'code') {
       this.configureCodeFlow();
@@ -45,6 +45,9 @@ export class AppComponent {
 
   }
 
+  private handleState(state) {
+    console.log('RETURNED STATE', state);
+  }
 
   private configureImplicitFlow() {
     this.oauthService.configure(authConfig);
@@ -71,7 +74,7 @@ export class AppComponent {
 
   }
 
-  // 
+  //
   // Below you find further examples for configuration functions
   //
 

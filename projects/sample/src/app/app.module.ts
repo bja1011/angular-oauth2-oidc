@@ -11,6 +11,7 @@ import { FlightHistoryComponent } from './flight-history/flight-history.componen
 import { HomeComponent } from './home/home.component';
 import { PasswordFlowLoginComponent } from './password-flow-login/password-flow-login.component';
 import { SharedModule } from './shared/shared.module';
+import { NgJsonEditorModule } from "ang-jsoneditor";
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { SharedModule } from './shared/shared.module';
         allowedUrls: ['http://www.angular.at/api'],
         sendAccessToken: true
       }
-    })
+    }),
+    NgJsonEditorModule.forRoot(),
   ],
   declarations: [
     AppComponent,

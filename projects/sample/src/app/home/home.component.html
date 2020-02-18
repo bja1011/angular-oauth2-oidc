@@ -2,69 +2,99 @@
 <h1 *ngIf="!givenName">Welcome!</h1>
 <h1 *ngIf="givenName">Welcome, {{givenName}} {{familyName}}!</h1>
 
-<div class="panel panel-default">
+<div class="col-sm-6">
+  <div class="panel panel-default">
     <div class="panel-body">
-        <p>Login with Authorization Server</p>
-        <div class="checkbox">
-            <label><input type="checkbox" [(ngModel)]="requestAccessToken"> Request AccessToken</label>
+      <p>Login with Authorization Server</p>
+      <div class="checkbox">
+        <label><input type="checkbox" [(ngModel)]="requestAccessToken"> Request AccessToken</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h2>Login with Implicit Flow</h2>
+      <p>
+        <button class="btn btn-default" (click)="loginImplicit()">Login</button>
+        <button class="btn btn-default" (click)="logout()">Logout</button>
+      </p>
+      For test server use <b> max/geheim </b>credentials
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h2>Login with Code Flow</h2>
+      <p>
+        <button class="btn btn-default" (click)="loginCode()">Login</button>
+        <button class="btn btn-default" (click)="logout()">Logout</button>
+      </p>
+      For test server use <b>alice/alice</b> credentials
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <p>
+        <b>access_token_expiration:</b> {{access_token_expiration}}
+      </p>
+      <p>
+        <b>id_token_expiration:</b> {{id_token_expiration}}
+      </p>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <p>
+        <b>access_token:</b> {{access_token}}
+      </p>
+      <p>
+        <b>id_token:</b> {{id_token}}
+      </p>
+      <div *ngIf="userProfile">
+        <b>user profile:</b>
+        <pre>{{userProfile | json}}</pre>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h2>Further Actions</h2>
+      <button class="btn btn-default" (click)="refresh()">Refresh</button>
+      <button class="btn btn-default" (click)="loadUserProfile()">Load User Profile</button>
+    </div>
+  </div>
+</div>
+<div class="col-sm-6">
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h2>Lib configuration</h2>
+      <button class="btn-default btn" (click)="implicitWithTestServer()">Use implicit flow with test server config</button><br>
+      <button class="btn-default btn" (click)="implicitWithSapServer()">Use implicit flow with SAP Server config</button><br>
+      <button class="btn-default btn" (click)="codeWithTestServer()">Use code flow with test server config</button><br>
+      <button class="btn-default btn" (click)="codeWithSapServer()">Use code flow with SAP Server config</button><br>
+      <button class="btn btn-default" (click)="loadFullConfig()">Enable Full Config</button>
+      <ng-container *ngIf="storedConfigs.length">
+      <h3>Stored configs</h3>
+      <button
+        *ngFor="let storedConfig of storedConfigs"
+        class="btn btn-default"
+        (click)="loadStoredConfig(storedConfig.config)"
+      >
+        {{storedConfig.name}}
+      </button>
+      </ng-container>
+      <div class="panel panel-default">
+        <div class="panel-body">
+          <json-editor #configEditor [options]="{}" [data]="this.selectedConfig" (change)="updateConfig()"></json-editor>
+          <br>
+          <button (click)="saveCurrentConfig()" class="btn btn-success">Save current config</button>
         </div>
+      </div>
     </div>
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <h2>Login with Implicit Flow</h2>
-        <p>
-            <button class="btn btn-default" (click)="loginImplicit()">Login</button>
-            <button class="btn btn-default" (click)="logout()">Logout</button>
-        </p>
-        <b>Username/Password:</b> max/geheim
-    </div>
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <h2>Login with Code Flow</h2>
-        <p>
-            <button class="btn btn-default" (click)="loginCode()">Login</button>
-            <button class="btn btn-default" (click)="logout()">Logout</button>
-        </p>
-        <b>Username/Password:</b> alice/alice
-    </div>
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <p>
-            <b>access_token_expiration:</b> {{access_token_expiration}}
-        </p>
-        <p>
-            <b>id_token_expiration:</b> {{id_token_expiration}}
-        </p>
-    </div>
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <p>
-            <b>access_token:</b> {{access_token}}
-        </p>
-        <p>
-            <b>id_token:</b> {{id_token}}
-        </p>
-        <div *ngIf="userProfile">
-            <b>user profile:</b>
-            <pre>{{userProfile | json}}</pre>
-        </div>
-
-    </div>
-</div>
-
-<div class="panel panel-default">
-    <div class="panel-body">
-        <h2>Further Actions</h2>
-        <button class="btn btn-default" (click)="refresh()">Refresh</button>
-
-        <button class="btn btn-default" (click)="loadUserProfile()">Load User Profile</button>
-    </div>
+  </div>
 </div>
