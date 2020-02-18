@@ -1,6 +1,7 @@
 import { authPasswordFlowConfig } from '../configs/auth-password-flow.config';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit } from '@angular/core';
+import { authPasswordFlowSapConfig } from "../configs/auth-password-flow-sap.config";
 
 @Component({
   selector: 'app-password-flow-login',
@@ -17,7 +18,7 @@ export class PasswordFlowLoginComponent implements OnInit {
     // This is just needed b/c this demo uses both,
     // implicit flow as well as password flow
 
-    this.oauthService.configure(authPasswordFlowConfig);
+    this.oauthService.configure(authPasswordFlowSapConfig);
     this.oauthService.loadDiscoveryDocument();
   }
 
@@ -49,7 +50,7 @@ export class PasswordFlowLoginComponent implements OnInit {
 
   loginWithPassword() {
     this.oauthService
-      .fetchTokenUsingPasswordFlowAndLoadUserProfile(
+      .fetchTokenUsingPasswordFlow(
         this.userName,
         this.password
       )

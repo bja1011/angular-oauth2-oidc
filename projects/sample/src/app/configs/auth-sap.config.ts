@@ -22,7 +22,7 @@ export const authSapConfig: AuthConfig = {
   // silentRefreshShowIFrame: true,
   showDebugInformation: true,
   sessionChecksEnabled: false,
-  timeoutFactor: 0.00001,
+  // timeoutFactor: 0.00001,
   strictDiscoveryDocumentValidation: false,
   skipIssuerCheck: true,
 };

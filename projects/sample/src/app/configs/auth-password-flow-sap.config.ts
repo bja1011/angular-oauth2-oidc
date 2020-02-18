@@ -2,9 +2,9 @@
 
 import { AuthConfig } from 'angular-oauth2-oidc';
 
-export const authConfig: AuthConfig = {
+export const authPasswordFlowSapConfig: AuthConfig = {
   // Url of the Identity Provider
-  issuer: 'https://steyer-identity-server.azurewebsites.net/identity',
+  issuer: 'https://storefront.c39j2-walkersde1-d4-public.model-t.cc.commerce.ondemand.com/authorizationserver',
 
   // URL of the SPA to redirect the user to after login
   redirectUri: window.location.origin + '/index.html',
@@ -13,16 +13,19 @@ export const authConfig: AuthConfig = {
   silentRefreshRedirectUri: window.location.origin + '/silent-refresh.html',
 
   // The SPA's id. The SPA is registerd with this id at the auth-server
-  clientId: 'spa-demo',
+  clientId: 'mobile_android',
+
+  strictDiscoveryDocumentValidation: false,
+  skipIssuerCheck: true,
+
+  dummyClientSecret: 'secret',
+
 
   // set the scope for the permissions the client should request
   // The first three are defined by OIDC. The 4th is a usecase-specific one
-  scope: 'openid profile email voucher',
-
-  // silentRefreshShowIFrame: true,
+  scope: '',
 
   showDebugInformation: true,
-  // timeoutFactor: 0.02,
-  silentRefreshShowIFrame: true,
-  sessionChecksEnabled: false,
+
+  oidc: false
 };
