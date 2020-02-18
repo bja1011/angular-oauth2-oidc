@@ -1,5 +1,5 @@
 import { authPasswordFlowConfig } from '../configs/auth-password-flow.config';
-import { OAuthService } from 'angular-oauth2-oidc';
+import { AuthConfig, OAuthService } from 'angular-oauth2-oidc';
 import { Component, OnInit } from '@angular/core';
 import { authPasswordFlowSapConfig } from "../configs/auth-password-flow-sap.config";
 
@@ -13,16 +13,23 @@ export class PasswordFlowLoginComponent implements OnInit {
   loginFailed: boolean = false;
   userProfile: object;
 
+  currentConfig: AuthConfig = { ...authPasswordFlowSapConfig };
+
   constructor(private oauthService: OAuthService) {
     // Tweak config for password flow
     // This is just needed b/c this demo uses both,
     // implicit flow as well as password flow
 
-    this.oauthService.configure(authPasswordFlowSapConfig);
+    this.reconfigureLibrary();
+  }
+
+  reconfigureLibrary() {
+    this.oauthService.configure(this.currentConfig);
     this.oauthService.loadDiscoveryDocument();
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   loadUserProfile(): void {
     this.oauthService.loadUserProfile().then(up => (this.userProfile = up));
@@ -66,5 +73,15 @@ export class PasswordFlowLoginComponent implements OnInit {
 
   logout() {
     this.oauthService.logOut(true);
+  }
+
+  useSapServerConfig() {
+    this.currentConfig = { ...authPasswordFlowSapConfig };
+    this.reconfigureLibrary();
+  }
+
+  useTestServerConfig() {
+    this.currentConfig = { ...authPasswordFlowConfig };
+    this.reconfigureLibrary();
   }
 }

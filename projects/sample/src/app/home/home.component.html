@@ -90,7 +90,7 @@
       </ng-container>
       <div class="panel panel-default">
         <div class="panel-body">
-          <json-editor #configEditor [options]="{}" [data]="this.selectedConfig" (change)="updateConfig()"></json-editor>
+          <json-editor #configEditor [options]="{mode: 'form'}" [data]="this.selectedConfig" (change)="updateConfig()"></json-editor>
           <br>
           <button (click)="saveCurrentConfig()" class="btn btn-success">Save current config</button>
         </div>
